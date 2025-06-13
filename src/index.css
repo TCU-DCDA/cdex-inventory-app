@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --tcu-50: #f4f3ff;
+    --tcu-100: #ebe9fe;
+    --tcu-200: #d9d6fe;
+    --tcu-300: #beb7fd;
+    --tcu-400: #9d8dfb;
+    --tcu-500: #7c5ef8;
+    --tcu-600: #6d3ef0;
+    --tcu-700: #5d2cdc;
+    --tcu-800: #4c23b7;
+    --tcu-900: #402095;
+    --tcu-950: #261268;
+    --tcu-primary: #4d1979;
+    --tcu-secondary: #663399;
+    --tcu-accent: #8b5cf6;
+  }
+}
+
+/* TCU Purple utility classes */
+@layer utilities {
+  .bg-tcu-primary { background-color: var(--tcu-primary); }
+  .bg-tcu-50 { background-color: var(--tcu-50); }
+  .bg-tcu-100 { background-color: var(--tcu-100); }
+  .bg-tcu-200 { background-color: var(--tcu-200); }
+  .bg-tcu-700 { background-color: var(--tcu-700); }
+  .bg-tcu-800 { background-color: var(--tcu-800); }
+  .bg-tcu-900 { background-color: var(--tcu-900); }
+  
+  .text-tcu-primary { color: var(--tcu-primary); }
+  .text-tcu-50 { color: var(--tcu-50); }
+  .text-tcu-100 { color: var(--tcu-100); }
+  .text-tcu-200 { color: var(--tcu-200); }
+  .text-tcu-400 { color: var(--tcu-400); }
+  .text-tcu-500 { color: var(--tcu-500); }
+  .text-tcu-600 { color: var(--tcu-600); }
+  .text-tcu-700 { color: var(--tcu-700); }
+  .text-tcu-800 { color: var(--tcu-800); }
+  .text-tcu-900 { color: var(--tcu-900); }
+  
+  .border-tcu-primary { border-color: var(--tcu-primary); }
+  .border-tcu-100 { border-color: var(--tcu-100); }
+  .border-tcu-200 { border-color: var(--tcu-200); }
+  .border-tcu-300 { border-color: var(--tcu-300); }
+  
+  .ring-tcu-primary { --tw-ring-color: var(--tcu-primary); }
+  .focus\:ring-tcu-primary:focus { --tw-ring-color: var(--tcu-primary); }
+}
