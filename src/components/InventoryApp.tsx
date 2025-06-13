@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Search, User, BookOpen, Camera, Mic, Monitor, CheckCircle, XCircle } from 'lucide-react';
 
 const InventoryApp = () => {
-  console.log('InventoryApp component is rendering - Updated with TCU branding', new Date().toISOString());
+  console.log('InventoryApp component is rendering - Button fix applied', new Date().toISOString());
   
   // Dummy equipment data
   const [equipment, setEquipment] = useState([
@@ -107,9 +107,27 @@ const InventoryApp = () => {
     checkout.serialNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Form validation
+  const isFormComplete = studentName.trim() !== '' && 
+                        studentId.trim() !== '' && 
+                        studentMajor.trim() !== '' && 
+                        facultySponsor.trim() !== '' && 
+                        selectedEquipment !== '';
+
+  // Form completion progress
+  const completedFields = [
+    studentName.trim() !== '',
+    studentId.trim() !== '',
+    studentMajor.trim() !== '',
+    facultySponsor.trim() !== '',
+    selectedEquipment !== ''
+  ].filter(Boolean).length;
+  const totalFields = 5;
+  const completionPercentage = Math.round((completedFields / totalFields) * 100);
+
   const handleCheckout = () => {
-    if (!studentName || !studentId || !studentMajor || !facultySponsor || !selectedEquipment) {
-      alert('Please fill in all fields');
+    if (!isFormComplete) {
+      alert('Please fill in all fields before completing checkout');
       return;
     }
 
@@ -296,22 +314,54 @@ const InventoryApp = () => {
                 </div>
                 
                 <div className="bg-tcu-50 border border-tcu-200 rounded-xl p-6 mb-8">
-                  <p className="text-tcu-800 text-base font-medium">
-                    📋 Please fill out all fields to complete your equipment checkout
-                  </p>
+                  <div className="flex items-center justify-between mb-4">
+                    <p className="text-tcu-800 text-base font-medium">
+                      📋 Please fill out all fields to complete your equipment checkout
+                    </p>
+                    <span className="text-sm font-semibold text-tcu-700">
+                      {completedFields}/{totalFields} Complete
+                    </span>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+                    <div 
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        completionPercentage === 100 ? 'bg-green-500' : 
+                        completionPercentage >= 60 ? 'bg-yellow-500' : 'bg-red-500'
+                      }`}
+                      style={{ width: `${completionPercentage}%` }}
+                    ></div>
+                  </div>
+                  
+                  {!isFormComplete && (
+                    <p className="text-red-600 text-sm font-medium">
+                      ⚠️ All fields marked with * are required
+                    </p>
+                  )}
+                  
+                  {isFormComplete && (
+                    <p className="text-green-600 text-sm font-medium">
+                      ✅ All required fields completed! Ready to checkout.
+                    </p>
+                  )}
                 </div>
 
                 <div className="space-y-8">
                   <div>
                     <label className="block text-base font-semibold text-gray-700 mb-3 flex items-center">
                       <User className="w-5 h-5 mr-3 text-tcu-600" />
-                      Student Name
+                      Student Name <span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
                       type="text"
                       value={studentName}
                       onChange={(e) => setStudentName(e.target.value)}
-                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        studentName.trim() === '' 
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
                       placeholder="Enter your full name"
                       required
                     />
@@ -319,13 +369,17 @@ const InventoryApp = () => {
 
                   <div>
                     <label className="block text-base font-semibold text-gray-700 mb-3">
-                      Student ID
+                      Student ID <span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
                       type="text"
                       value={studentId}
                       onChange={(e) => setStudentId(e.target.value)}
-                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        studentId.trim() === '' 
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
                       placeholder="Enter your student ID"
                       required
                     />
@@ -334,13 +388,17 @@ const InventoryApp = () => {
                   <div>
                     <label className="block text-base font-semibold text-gray-700 mb-3 flex items-center">
                       <BookOpen className="w-5 h-5 mr-3 text-tcu-600" />
-                      Student Major
+                      Student Major <span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
                       type="text"
                       value={studentMajor}
                       onChange={(e) => setStudentMajor(e.target.value)}
-                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        studentMajor.trim() === '' 
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
                       placeholder="e.g., Film Production, Journalism"
                       required
                     />
@@ -348,13 +406,17 @@ const InventoryApp = () => {
 
                   <div>
                     <label className="block text-base font-semibold text-gray-700 mb-3">
-                      Faculty Sponsor
+                      Faculty Sponsor <span className="text-red-500 ml-1">*</span>
                     </label>
                     <input
                       type="text"
                       value={facultySponsor}
                       onChange={(e) => setFacultySponsor(e.target.value)}
-                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        facultySponsor.trim() === '' 
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
                       placeholder="Enter sponsoring faculty member"
                       required
                     />
@@ -362,12 +424,16 @@ const InventoryApp = () => {
 
                   <div>
                     <label className="block text-base font-semibold text-gray-700 mb-3">
-                      Select Equipment
+                      Select Equipment <span className="text-red-500 ml-1">*</span>
                     </label>
                     <select
                       value={selectedEquipment}
                       onChange={(e) => setSelectedEquipment(e.target.value)}
-                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors bg-white text-base"
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        selectedEquipment === '' 
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
                       required
                     >
                       <option value="">Choose equipment...</option>
@@ -390,9 +456,24 @@ const InventoryApp = () => {
                     <button
                       type="button"
                       onClick={handleCheckout}
-                      className="w-full bg-gradient-to-r from-tcu-700 to-tcu-800 text-white py-5 px-8 rounded-xl font-semibold hover:from-tcu-800 hover:to-tcu-900 focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl text-lg"
+                      disabled={!isFormComplete}
+                      className={`w-full py-6 px-8 rounded-xl font-black focus:outline-none focus:ring-4 focus:ring-offset-2 transition-all duration-200 shadow-xl text-xl border-4 uppercase tracking-wider ${
+                        isFormComplete 
+                          ? 'bg-purple-700 hover:bg-purple-800 text-white border-purple-900 hover:shadow-2xl focus:ring-yellow-300 cursor-pointer' 
+                          : 'bg-gray-400 text-gray-600 border-gray-500 cursor-not-allowed opacity-60'
+                      }`}
+                      style={isFormComplete ? { 
+                        backgroundColor: '#4d1979',
+                        borderColor: '#2d1050',
+                        color: '#ffffff',
+                        textShadow: '0 1px 2px rgba(0,0,0,0.5)'
+                      } : {
+                        backgroundColor: '#9ca3af',
+                        borderColor: '#6b7280',
+                        color: '#4b5563'
+                      }}
                     >
-                      Complete Checkout
+                      {isFormComplete ? '✅ COMPLETE CHECKOUT' : '🔒 COMPLETE ALL FIELDS'}
                     </button>
                   </div>
                 </div>
