@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 @layer base {
   :root {
@@ -18,6 +16,14 @@
     --tcu-primary: #4d1979;
     --tcu-secondary: #663399;
     --tcu-accent: #8b5cf6;
+  }
+  
+  * {
+    font-family: 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .font-black {
+    font-weight: 800;
   }
 }
 
@@ -46,7 +52,24 @@
   .border-tcu-100 { border-color: var(--tcu-100); }
   .border-tcu-200 { border-color: var(--tcu-200); }
   .border-tcu-300 { border-color: var(--tcu-300); }
+  .border-tcu-700 { border-color: var(--tcu-700); }
   
   .ring-tcu-primary { --tw-ring-color: var(--tcu-primary); }
   .focus\:ring-tcu-primary:focus { --tw-ring-color: var(--tcu-primary); }
+  
+  /* Custom border width for tabs */
+  .border-b-3 { border-bottom-width: 3px; }
+  
+  /* Custom gradient backgrounds */
+  .bg-gradient-tcu {
+    background: linear-gradient(135deg, var(--tcu-800) 0%, var(--tcu-700) 100%);
+  }
+  
+  /* Custom spacing utilities */
+  .space-y-7 > * + * { margin-top: 1.75rem; }
+  .space-y-8 > * + * { margin-top: 2rem; }
+  .space-x-8 > * + * { margin-left: 2rem; }
+  
+  /* Enhanced focus ring */
+  .focus\:ring-3:focus { --tw-ring-width: 3px; }
 }

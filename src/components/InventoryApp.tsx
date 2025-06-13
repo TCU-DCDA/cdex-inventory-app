@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Search, User, BookOpen, Camera, Mic, Monitor, CheckCircle, XCircle } from 'lucide-react';
 
 const InventoryApp = () => {
-  console.log('InventoryApp component is rendering');
+  console.log('InventoryApp component is rendering - Updated with TCU branding', new Date().toISOString());
   
   // Dummy equipment data
   const [equipment, setEquipment] = useState([
@@ -164,129 +164,210 @@ const InventoryApp = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-4xl mx-auto p-4">
+    <div className="min-h-screen bg-gradient-to-br from-tcu-50 to-gray-100 py-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
         {/* Header */}
-        <div className="bg-purple-700 text-white p-8 rounded-t-2xl">
-          <h1 className="text-3xl font-bold mb-2">
-            CDEx Inventory Management
-          </h1>
-          <p className="text-purple-100">Center for Digital Expression - Texas Christian University</p>
+        <div className="bg-tcu-primary text-white relative overflow-hidden rounded-t-3xl shadow-xl mb-2">
+          {/* Subtle geometric background */}
+          <div className="absolute inset-0 opacity-5">
+            <div className="absolute top-0 right-0 w-96 h-96 rounded-full bg-white transform translate-x-32 -translate-y-32"></div>
+            <div className="absolute bottom-0 left-0 w-80 h-80 rounded-full bg-white transform -translate-x-20 translate-y-20"></div>
+            <div className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-white transform -translate-x-32 -translate-y-32"></div>
+          </div>
+          
+          <div className="relative z-10 px-16 py-20">
+            <div className="flex items-center justify-between">
+              {/* Left side - Main branding */}
+              <div className="flex-1">
+                <div className="mb-8">
+                  <h1 className="text-7xl font-black text-white leading-none tracking-tight mb-4">
+                    CDEx
+                  </h1>
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="h-0.5 bg-white w-16"></div>
+                    <p className="text-xl font-light text-white/90 uppercase tracking-widest">
+                      Inventory Management
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <p className="text-white/80 text-base font-medium">
+                    Center for Digital Expression
+                  </p>
+                  <p className="text-white/60 text-sm font-normal">
+                    Texas Christian University
+                  </p>
+                </div>
+              </div>
+              
+              {/* Right side - Stats */}
+              <div className="hidden xl:flex items-center space-x-8">
+                <div className="text-center group">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
+                    <div className="text-5xl font-black text-white mb-2">{availableEquipment.length}</div>
+                    <div className="text-white/70 text-sm font-medium uppercase tracking-wider">Available</div>
+                  </div>
+                </div>
+                
+                <div className="text-center group">
+                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
+                    <div className="text-5xl font-black text-white mb-2">{activeCheckouts.length}</div>
+                    <div className="text-white/70 text-sm font-medium uppercase tracking-wider">Checked Out</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            {/* Mobile stats */}
+            <div className="xl:hidden mt-12 flex justify-center space-x-6">
+              <div className="text-center">
+                <div className="text-3xl font-black text-white">{availableEquipment.length}</div>
+                <div className="text-white/70 text-xs uppercase tracking-wider">Available</div>
+              </div>
+              <div className="w-px bg-white/30 mx-4"></div>
+              <div className="text-center">
+                <div className="text-3xl font-black text-white">{activeCheckouts.length}</div>
+                <div className="text-white/70 text-xs uppercase tracking-wider">Checked Out</div>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-white border-b border-gray-200 px-8">
-          <div className="flex space-x-0">
+        <div className="bg-white border-b border-tcu-200 px-12 py-2 shadow-sm">
+          <div className="flex space-x-4">
             <button
               onClick={() => setActiveTab('checkout')}
-              className={`px-6 py-4 font-medium border-b-2 transition-colors ${
+              className={`px-8 py-4 font-semibold border-b-3 transition-all duration-200 ${
                 activeTab === 'checkout' 
-                  ? 'text-purple-600 border-purple-600' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'text-tcu-700 border-tcu-700 bg-tcu-50' 
+                  : 'text-gray-600 border-transparent hover:text-tcu-600 hover:bg-tcu-50/50'
               }`}
             >
-              Check Out Equipment
+              <div className="flex items-center space-x-2">
+                <BookOpen className="w-4 h-4" />
+                <span>Check Out Equipment</span>
+              </div>
             </button>
             <button
               onClick={() => setActiveTab('checkin')}
-              className={`px-6 py-4 font-medium border-b-2 transition-colors ${
+              className={`px-8 py-4 font-semibold border-b-3 transition-all duration-200 ${
                 activeTab === 'checkin' 
-                  ? 'text-purple-600 border-purple-600' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'text-tcu-700 border-tcu-700 bg-tcu-50' 
+                  : 'text-gray-600 border-transparent hover:text-tcu-600 hover:bg-tcu-50/50'
               }`}
             >
-              Check In Equipment
+              <div className="flex items-center space-x-2">
+                <CheckCircle className="w-4 h-4" />
+                <span>Check In Equipment</span>
+              </div>
             </button>
             <button
               onClick={() => setActiveTab('inventory')}
-              className={`px-6 py-4 font-medium border-b-2 transition-colors ${
+              className={`px-8 py-4 font-semibold border-b-3 transition-all duration-200 ${
                 activeTab === 'inventory' 
-                  ? 'text-purple-600 border-purple-600' 
-                  : 'text-gray-500 border-transparent hover:text-gray-700'
+                  ? 'text-tcu-700 border-tcu-700 bg-tcu-50' 
+                  : 'text-gray-600 border-transparent hover:text-tcu-600 hover:bg-tcu-50/50'
               }`}
             >
-              View Inventory
+              <div className="flex items-center space-x-2">
+                <Monitor className="w-4 h-4" />
+                <span>View Inventory</span>
+              </div>
             </button>
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="bg-white p-8 rounded-b-2xl shadow-lg">
+        <div className="bg-white p-12 rounded-b-2xl shadow-lg border border-tcu-100">
           {/* Checkout Tab */}
           {activeTab === 'checkout' && (
-            <div className="grid md:grid-cols-2 gap-8">
+            <div className="grid lg:grid-cols-2 gap-16">
               {/* Checkout Form */}
-              <div>
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                  Check Out Equipment
-                </h2>
-                <div className="space-y-6">
+              <div className="space-y-8 mx-8">
+                <div className="flex items-center space-x-4 mb-8">
+                  <div className="bg-tcu-100 p-3 rounded-xl">
+                    <BookOpen className="w-7 h-7 text-tcu-700" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    Equipment Checkout
+                  </h2>
+                </div>
+                
+                <div className="bg-tcu-50 border border-tcu-200 rounded-xl p-6 mb-8">
+                  <p className="text-tcu-800 text-base font-medium">
+                    📋 Please fill out all fields to complete your equipment checkout
+                  </p>
+                </div>
+
+                <div className="space-y-8">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <User className="w-4 h-4 mr-2" />
+                    <label className="block text-base font-semibold text-gray-700 mb-3 flex items-center">
+                      <User className="w-5 h-5 mr-3 text-tcu-600" />
                       Student Name
                     </label>
                     <input
                       type="text"
                       value={studentName}
                       onChange={(e) => setStudentName(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Enter student name"
+                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      placeholder="Enter your full name"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-base font-semibold text-gray-700 mb-3">
                       Student ID
                     </label>
                     <input
                       type="text"
                       value={studentId}
                       onChange={(e) => setStudentId(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Enter student ID"
+                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      placeholder="Enter your student ID"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2 flex items-center">
-                      <BookOpen className="w-4 h-4 mr-2" />
+                    <label className="block text-base font-semibold text-gray-700 mb-3 flex items-center">
+                      <BookOpen className="w-5 h-5 mr-3 text-tcu-600" />
                       Student Major
                     </label>
                     <input
                       type="text"
                       value={studentMajor}
                       onChange={(e) => setStudentMajor(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Enter student major"
+                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      placeholder="e.g., Film Production, Journalism"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Sponsoring Faculty Member
+                    <label className="block text-base font-semibold text-gray-700 mb-3">
+                      Faculty Sponsor
                     </label>
                     <input
                       type="text"
                       value={facultySponsor}
                       onChange={(e) => setFacultySponsor(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                      placeholder="Enter faculty sponsor"
+                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
+                      placeholder="Enter sponsoring faculty member"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-base font-semibold text-gray-700 mb-3">
                       Select Equipment
                     </label>
                     <select
                       value={selectedEquipment}
                       onChange={(e) => setSelectedEquipment(e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors bg-white text-base"
                       required
                     >
                       <option value="">Choose equipment...</option>
@@ -305,45 +386,66 @@ const InventoryApp = () => {
                     </select>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={handleCheckout}
-                    className="w-full bg-purple-700 text-white py-4 px-6 rounded-lg font-semibold hover:bg-purple-800 transition-colors"
-                  >
-                    Check Out Equipment
-                  </button>
+                  <div className="pt-4">
+                    <button
+                      type="button"
+                      onClick={handleCheckout}
+                      className="w-full bg-gradient-to-r from-tcu-700 to-tcu-800 text-white py-5 px-8 rounded-xl font-semibold hover:from-tcu-800 hover:to-tcu-900 focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:ring-offset-2 transition-all duration-200 shadow-lg hover:shadow-xl text-lg"
+                    >
+                      Complete Checkout
+                    </button>
+                  </div>
                 </div>
               </div>
 
               {/* Equipment Availability */}
-              <div>
-                <h2 className="text-2xl font-bold mb-6 text-gray-900">
-                  Equipment Availability
-                </h2>
-                <div className="space-y-4">
+              <div className="space-y-8">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-tcu-100 p-3 rounded-xl">
+                    <Monitor className="w-7 h-7 text-tcu-700" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    Equipment Availability
+                  </h2>
+                </div>
+                
+                <div className="space-y-6">
                   {categories.map(category => {
                     const categoryItems = equipment.filter(item => item.category === category);
                     const availableCount = categoryItems.filter(item => item.available).length;
                     const totalCount = categoryItems.length;
+                    const percentageAvailable = Math.round((availableCount / totalCount) * 100);
                     
                     return (
-                      <div key={category} className="bg-gray-50 p-4 rounded-lg">
-                        <div className="flex justify-between items-center">
+                      <div key={category} className="bg-gradient-to-r from-tcu-50 to-gray-50 border border-tcu-200 p-5 rounded-lg hover:shadow-md transition-shadow">
+                        <div className="flex justify-between items-center mb-3">
                           <div className="flex items-center">
-                            <div className="mr-3 text-purple-600">
+                            <div className="mr-3 text-tcu-600">
                               {getIcon(category)}
                             </div>
-                            <span className="font-medium text-gray-900">{category}</span>
+                            <span className="font-semibold text-gray-900">{category}</span>
                           </div>
                           <div className="text-right">
-                            <div className="font-bold">
+                            <div className="font-bold text-lg">
                               <span className={availableCount > 0 ? 'text-green-600' : 'text-red-500'}>
                                 {availableCount}
                               </span>
                               <span className="text-gray-400"> / {totalCount}</span>
                             </div>
-                            <div className="text-xs text-gray-500">available</div>
+                            <div className="text-xs text-gray-500 font-medium">available</div>
                           </div>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              percentageAvailable > 66 ? 'bg-green-500' : 
+                              percentageAvailable > 33 ? 'bg-yellow-500' : 'bg-red-500'
+                            }`}
+                            style={{ width: `${percentageAvailable}%` }}
+                          ></div>
+                        </div>
+                        <div className="text-xs text-gray-600 mt-1 text-right">
+                          {percentageAvailable}% available
                         </div>
                       </div>
                     );
@@ -355,11 +457,16 @@ const InventoryApp = () => {
 
           {/* Check In Tab */}
           {activeTab === 'checkin' && (
-            <div className="space-y-6">
-              <div className="flex justify-between items-center">
-                <h2 className="text-2xl font-bold text-gray-900">
-                  Active Checkouts
-                </h2>
+            <div className="space-y-8">
+              <div className="flex justify-between items-center flex-wrap gap-6">
+                <div className="flex items-center space-x-4">
+                  <div className="bg-tcu-100 p-3 rounded-xl">
+                    <CheckCircle className="w-7 h-7 text-tcu-700" />
+                  </div>
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    Active Checkouts
+                  </h2>
+                </div>
                 <div className="relative">
                   <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                   <input
@@ -367,37 +474,65 @@ const InventoryApp = () => {
                     placeholder="Search checkouts..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-12 pr-4 py-3 w-80 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="pl-12 pr-4 py-4 w-80 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base"
                   />
                 </div>
               </div>
 
               {filteredCheckouts.length === 0 ? (
-                <div className="text-center py-12">
-                  <CheckCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <p className="text-gray-500 text-lg">No active checkouts found</p>
+                <div className="text-center py-20 bg-tcu-50 rounded-xl border border-tcu-200">
+                  <CheckCircle className="w-24 h-24 text-tcu-300 mx-auto mb-6" />
+                  <p className="text-tcu-700 text-2xl font-medium">No active checkouts found</p>
+                  <p className="text-tcu-600 mt-3 text-lg">All equipment is available for checkout</p>
                 </div>
               ) : (
-                <div className="grid gap-4">
+                <div className="grid gap-8">
                   {filteredCheckouts.map(checkout => (
-                    <div key={checkout.id} className="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+                    <div key={checkout.id} className="bg-white border border-tcu-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
                       <div className="flex justify-between items-start">
                         <div className="flex-1">
-                          <h3 className="font-semibold text-lg text-gray-900 mb-2">
-                            {checkout.studentName}
-                          </h3>
-                          <div className="space-y-1 text-sm text-gray-600">
-                            <p><span className="font-medium">Student ID:</span> {checkout.studentId}</p>
-                            <p><span className="font-medium">Major:</span> {checkout.studentMajor}</p>
-                            <p><span className="font-medium">Faculty Sponsor:</span> {checkout.facultySponsor}</p>
-                            <p><span className="font-medium">Equipment:</span> {checkout.equipmentName} - {checkout.serialNumber}</p>
-                            <p><span className="font-medium">Checkout Date:</span> {checkout.checkoutDate}</p>
-                            <p><span className="font-medium">Return Date:</span> {checkout.returnDate}</p>
+                          <div className="flex items-center space-x-4 mb-6">
+                            <div className="bg-tcu-100 p-3 rounded-full">
+                              <User className="w-6 h-6 text-tcu-700" />
+                            </div>
+                            <h3 className="font-bold text-2xl text-gray-900">
+                              {checkout.studentName}
+                            </h3>
+                          </div>
+                          <div className="grid md:grid-cols-2 gap-6 text-base">
+                            <div className="space-y-3">
+                              <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Student ID:</span> 
+                                <span className="text-gray-700">{checkout.studentId}</span>
+                              </p>
+                              <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Major:</span> 
+                                <span className="text-gray-700">{checkout.studentMajor}</span>
+                              </p>
+                              <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Sponsor:</span> 
+                                <span className="text-gray-700">{checkout.facultySponsor}</span>
+                              </p>
+                            </div>
+                            <div className="space-y-3">
+                              <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Equipment:</span> 
+                                <span className="text-gray-700">{checkout.equipmentName}</span>
+                              </p>
+                              <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Serial:</span> 
+                                <span className="text-gray-700 font-mono">{checkout.serialNumber}</span>
+                              </p>
+                              <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Due:</span> 
+                                <span className="text-red-600 font-medium">{checkout.returnDate}</span>
+                              </p>
+                            </div>
                           </div>
                         </div>
                         <button
                           onClick={() => handleCheckin(checkout.id)}
-                          className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors font-medium"
+                          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-3 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl text-lg ml-6"
                         >
                           Check In
                         </button>
@@ -411,37 +546,54 @@ const InventoryApp = () => {
 
           {/* Inventory Tab */}
           {activeTab === 'inventory' && (
-            <div className="space-y-6">
-              <h2 className="text-2xl font-bold text-gray-900">Equipment Inventory</h2>
+            <div className="space-y-8">
+              <div className="flex items-center space-x-4">
+                <div className="bg-tcu-100 p-3 rounded-xl">
+                  <Monitor className="w-7 h-7 text-tcu-700" />
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900">Equipment Inventory</h2>
+              </div>
               
               {categories.map(category => {
                 const categoryItems = equipment.filter(item => item.category === category);
                 if (categoryItems.length === 0) return null;
 
+                const availableCount = categoryItems.filter(item => item.available).length;
+                const totalCount = categoryItems.length;
+
                 return (
-                  <div key={category} className="bg-white border border-gray-200 rounded-lg p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <div className="mr-3 text-purple-600">
-                        {getIcon(category)}
+                  <div key={category} className="bg-white border border-tcu-200 rounded-xl p-8 shadow-sm">
+                    <div className="flex items-center justify-between mb-6">
+                      <h3 className="text-xl font-bold text-gray-900 flex items-center">
+                        <div className="mr-4 text-tcu-600">
+                          {getIcon(category)}
+                        </div>
+                        {category}
+                      </h3>
+                      <div className="text-base font-medium">
+                        <span className="text-green-600">{availableCount}</span>
+                        <span className="text-gray-400"> / {totalCount} available</span>
                       </div>
-                      {category}
-                    </h3>
-                    <div className="grid gap-2">
+                    </div>
+                    <div className="grid gap-4">
                       {categoryItems.map(item => (
-                        <div key={item.id} className="flex justify-between items-center py-2 px-4 bg-gray-50 rounded">
-                          <div>
-                            <span className="font-medium text-gray-900">{item.name}</span>
-                            <span className="text-gray-500 ml-2">({item.serialNumber})</span>
+                        <div key={item.id} className="flex justify-between items-center py-4 px-6 bg-gradient-to-r from-tcu-50 to-gray-50 rounded-xl border border-tcu-100 hover:shadow-sm transition-shadow">
+                          <div className="flex items-center space-x-4">
+                            <div className={`w-4 h-4 rounded-full ${item.available ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                            <div>
+                              <span className="font-semibold text-gray-900 text-lg">{item.name}</span>
+                              <span className="text-gray-500 ml-3 font-mono text-base">({item.serialNumber})</span>
+                            </div>
                           </div>
                           <div className="flex items-center">
                             {item.available ? (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                <CheckCircle className="w-3 h-3 mr-1" />
+                              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-green-100 text-green-800 border border-green-200">
+                                <CheckCircle className="w-4 h-4 mr-2" />
                                 Available
                               </span>
                             ) : (
-                              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
-                                <XCircle className="w-3 h-3 mr-1" />
+                              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-red-100 text-red-800 border border-red-200">
+                                <XCircle className="w-4 h-4 mr-2" />
                                 Checked Out
                               </span>
                             )}
