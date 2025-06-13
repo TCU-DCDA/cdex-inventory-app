@@ -613,64 +613,71 @@ const InventoryApp = () => {
               ) : (
                 <div className="grid gap-8">
                   {filteredCheckouts.map(checkout => (
-                    <div key={checkout.id} className="bg-white border border-tcu-200 rounded-xl p-8 shadow-sm hover:shadow-md transition-shadow">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center space-x-4 mb-6">
-                            <div className="bg-tcu-100 p-3 rounded-full">
-                              <User className="w-6 h-6 text-tcu-700" />
-                            </div>
-                            <h3 className="font-bold text-2xl text-gray-900">
-                              {checkout.studentName}
-                            </h3>
+                    <div key={checkout.id} className="bg-white border border-tcu-200 rounded-xl p-6 md:p-8 shadow-sm hover:shadow-md transition-shadow">
+                      <div className="space-y-6">
+                        {/* Header with student info */}
+                        <div className="flex items-center space-x-4">
+                          <div className="bg-tcu-100 p-3 rounded-full">
+                            <User className="w-6 h-6 text-tcu-700" />
                           </div>
-                          <div className="grid md:grid-cols-2 gap-6 text-base">
-                            <div className="space-y-3">
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Student ID:</span> 
-                                <span className="text-gray-700">{checkout.studentId}</span>
-                              </p>
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Email:</span> 
-                                <span className="text-gray-700">{checkout.studentEmail}</span>
-                              </p>
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Major:</span> 
-                                <span className="text-gray-700">{checkout.studentMajor}</span>
-                              </p>
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Sponsor:</span> 
-                                <span className="text-gray-700">{checkout.facultySponsor}</span>
-                              </p>
-                            </div>
-                            <div className="space-y-3">
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Equipment:</span> 
-                                <span className="text-gray-700">{checkout.equipmentName}</span>
-                              </p>
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Serial:</span> 
-                                <span className="text-gray-700 font-mono">{checkout.serialNumber}</span>
-                              </p>
-                              <p className="flex items-center">
-                                <span className="font-semibold text-tcu-700 w-28">Due:</span> 
-                                <span className="text-red-600 font-medium">{checkout.returnDate}</span>
-                              </p>
-                            </div>
-                          </div>
-                          {(checkout as any).comments && (checkout as any).comments.trim() !== '' && (
-                            <div className="mt-6 p-4 bg-tcu-50 rounded-lg border border-tcu-200">
-                              <h4 className="font-semibold text-tcu-700 mb-2">Comments:</h4>
-                              <p className="text-gray-700 text-sm leading-relaxed">{(checkout as any).comments}</p>
-                            </div>
-                          )}
+                          <h3 className="font-bold text-xl md:text-2xl text-gray-900">
+                            {checkout.studentName}
+                          </h3>
                         </div>
-                        <button
-                          onClick={() => handleCheckin(checkout.id)}
-                          className="bg-gradient-to-r from-green-600 to-green-700 text-white px-8 py-4 rounded-xl hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-3 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl text-lg ml-6"
-                        >
-                          Check In
-                        </button>
+                        
+                        {/* Student and equipment details */}
+                        <div className="grid sm:grid-cols-2 gap-4 md:gap-6 text-sm md:text-base">
+                          <div className="space-y-3">
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Student ID:</span> 
+                              <span className="text-gray-700">{checkout.studentId}</span>
+                            </p>
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Email:</span> 
+                              <span className="text-gray-700 break-all">{checkout.studentEmail}</span>
+                            </p>
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Major:</span> 
+                              <span className="text-gray-700">{checkout.studentMajor}</span>
+                            </p>
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Sponsor:</span> 
+                              <span className="text-gray-700">{checkout.facultySponsor}</span>
+                            </p>
+                          </div>
+                          <div className="space-y-3">
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Equipment:</span> 
+                              <span className="text-gray-700">{checkout.equipmentName}</span>
+                            </p>
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Serial:</span> 
+                              <span className="text-gray-700 font-mono">{checkout.serialNumber}</span>
+                            </p>
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Due:</span> 
+                              <span className="text-red-600 font-medium">{checkout.returnDate}</span>
+                            </p>
+                          </div>
+                        </div>
+                        
+                        {/* Comments section */}
+                        {(checkout as any).comments && (checkout as any).comments.trim() !== '' && (
+                          <div className="p-4 bg-tcu-50 rounded-lg border border-tcu-200">
+                            <h4 className="font-semibold text-tcu-700 mb-2">Comments:</h4>
+                            <p className="text-gray-700 text-sm leading-relaxed">{(checkout as any).comments}</p>
+                          </div>
+                        )}
+                        
+                        {/* Check In button at bottom */}
+                        <div className="pt-4 border-t border-gray-200">
+                          <button
+                            onClick={() => handleCheckin(checkout.id)}
+                            className="w-full sm:w-auto bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-xl hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-3 focus:ring-green-500 focus:ring-offset-2 transition-all duration-200 font-semibold shadow-lg hover:shadow-xl text-base md:text-lg"
+                          >
+                            Check In
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
