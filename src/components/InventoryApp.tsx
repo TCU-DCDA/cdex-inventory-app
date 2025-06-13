@@ -152,111 +152,110 @@ const InventoryApp = () => {
             <div className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-white transform -translate-x-32 -translate-y-32"></div>
           </div>
           
-          <div className="relative z-10 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 md:py-16 lg:py-20">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-8 lg:space-y-0">
+          <div className="relative z-10 px-4 sm:px-6 md:px-8 lg:px-12 py-4 sm:py-6 md:py-8">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-4 lg:space-y-0">
               {/* Left side - Main branding */}
               <div className="flex-1">
-                <div className="mb-6 md:mb-8">
-                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-none tracking-tight mb-3 md:mb-4">
+                <div className="mb-3 md:mb-4">
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-none tracking-tight mb-2">
                     CDEx
                   </h1>
-                  <div className="flex items-center space-x-3 md:space-x-4 mb-4 md:mb-6">
-                    <div className="h-0.5 bg-white w-12 md:w-16"></div>
-                    <p className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-white/90 uppercase tracking-widest">
+                  <div className="flex items-center space-x-2 md:space-x-3 mb-2 md:mb-3">
+                    <div className="h-0.5 bg-white w-8 md:w-12"></div>
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg font-light text-white/90 uppercase tracking-widest">
                       Inventory Management
                     </p>
                   </div>
                 </div>
                 
-                <div className="space-y-1 md:space-y-2">
-                  <p className="text-white/80 text-sm md:text-base font-medium">
+                <div className="space-y-0.5 md:space-y-1">
+                  <p className="text-white/80 text-xs md:text-sm font-medium">
                     Center for Digital Expression
                   </p>
-                  <p className="text-white/60 text-xs md:text-sm font-normal">
+                  <p className="text-white/60 text-xs font-normal">
                     Texas Christian University
                   </p>
                 </div>
               </div>
               
               {/* Right side - Stats - Desktop Only */}
-              <div className="hidden xl:flex items-center space-x-8">
+              <div className="hidden xl:flex items-center space-x-6">
                 <div className="text-center group">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
-                    <div className="text-5xl font-black text-white mb-2">{availableEquipment.length}</div>
-                    <div className="text-white/70 text-sm font-medium uppercase tracking-wider">Available</div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
+                    <div className="text-3xl font-black text-white mb-1">{availableEquipment.length}</div>
+                    <div className="text-white/70 text-xs font-medium uppercase tracking-wider">Available</div>
                   </div>
                 </div>
                 
                 <div className="text-center group">
-                  <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
-                    <div className="text-5xl font-black text-white mb-2">{activeCheckouts.length}</div>
-                    <div className="text-white/70 text-sm font-medium uppercase tracking-wider">Checked Out</div>
+                  <div className="bg-white/10 backdrop-blur-sm rounded-xl px-6 py-4 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
+                    <div className="text-3xl font-black text-white mb-1">{activeCheckouts.length}</div>
+                    <div className="text-white/70 text-xs font-medium uppercase tracking-wider">Checked Out</div>
                   </div>
                 </div>
               </div>
             </div>
             
-            {/* Status indicators */}
-            <div className="mt-6 md:mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-              <div className="flex flex-wrap items-center gap-3 md:gap-4">
-                {/* Online status */}
+            {/* Bottom section with mobile stats (left) and status indicators (right) */}
+            <div className="mt-3 md:mt-4 flex justify-between items-end">
+              {/* Left side: Mobile stats */}
+              <div className="xl:hidden flex justify-start space-x-4">
+                <div className="text-center">
+                  <div className="text-xl md:text-2xl font-black text-white">{availableEquipment.length}</div>
+                  <div className="text-white/70 text-xs uppercase tracking-wider">Available</div>
+                </div>
+                <div className="w-px bg-white/30 mx-3"></div>
+                <div className="text-center">
+                  <div className="text-xl md:text-2xl font-black text-white">{activeCheckouts.length}</div>
+                  <div className="text-white/70 text-xs uppercase tracking-wider">Checked Out</div>
+                </div>
+              </div>
+              
+              {/* Right side: Status indicators - Right aligned in 3 lines */}
+              <div className="flex flex-col items-end space-y-2">
+                {/* Line 1: Online status */}
                 <div className="flex items-center space-x-2">
                   {isOnline ? (
                     <Wifi className="w-4 h-4 text-green-400" />
                   ) : (
                     <WifiOff className="w-4 h-4 text-red-400" />
                   )}
-                  <span className="text-white/70 text-xs md:text-sm">
+                  <span className="text-white/70 text-xs">
                     {isOnline ? 'Online' : 'Offline'}
                   </span>
+                  {/* Loading indicator inline */}
+                  {isLoading && (
+                    <>
+                      <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full ml-2"></div>
+                      <span className="text-white/70 text-xs">Loading...</span>
+                    </>
+                  )}
                 </div>
                 
-                {/* Google Sheets status */}
+                {/* Line 2: Google Sheets status (Available) */}
                 <div className="flex items-center space-x-2">
                   <div className={`w-2 h-2 rounded-full ${isConfigured ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
-                  <span className="text-white/70 text-xs md:text-sm">
-                    {isConfigured ? 'Google Sheets Connected' : 'Local Storage Only'}
+                  <span className="text-white/70 text-xs">
+                    {isConfigured ? 'Available' : 'Local Only'}
                   </span>
+                  {/* Error indicator inline */}
+                  {error && (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-red-400 ml-2"></div>
+                      <span className="text-white/70 text-xs truncate max-w-32">{error}</span>
+                    </>
+                  )}
                 </div>
                 
-                {/* Loading indicator */}
-                {isLoading && (
-                  <div className="flex items-center space-x-2">
-                    <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full"></div>
-                    <span className="text-white/70 text-xs md:text-sm">Loading...</span>
-                  </div>
-                )}
-                
-                {/* Error indicator */}
-                {error && (
-                  <div className="flex items-center space-x-2">
-                    <div className="w-2 h-2 rounded-full bg-red-400"></div>
-                    <span className="text-white/70 text-xs md:text-sm truncate max-w-48">{error}</span>
-                  </div>
-                )}
-              </div>
-              
-              {/* Refresh button */}
-              <button
-                onClick={refreshData}
-                disabled={isLoading}
-                className="flex items-center justify-center space-x-2 px-3 md:px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-              >
-                <RefreshCw className={`w-4 h-4 text-white ${isLoading ? 'animate-spin' : ''}`} />
-                <span className="text-white/90 text-xs md:text-sm font-medium">Refresh</span>
-              </button>
-            </div>
-            
-            {/* Mobile stats */}
-            <div className="xl:hidden mt-8 md:mt-12 flex justify-center space-x-6">
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-black text-white">{availableEquipment.length}</div>
-                <div className="text-white/70 text-xs uppercase tracking-wider">Available</div>
-              </div>
-              <div className="w-px bg-white/30 mx-4"></div>
-              <div className="text-center">
-                <div className="text-2xl md:text-3xl font-black text-white">{activeCheckouts.length}</div>
-                <div className="text-white/70 text-xs uppercase tracking-wider">Checked Out</div>
+                {/* Line 3: Refresh button */}
+                <button
+                  onClick={refreshData}
+                  disabled={isLoading}
+                  className="flex items-center justify-center space-x-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <RefreshCw className={`w-4 h-4 text-white ${isLoading ? 'animate-spin' : ''}`} />
+                  <span className="text-white/90 text-xs font-medium">Refresh</span>
+                </button>
               </div>
             </div>
           </div>
