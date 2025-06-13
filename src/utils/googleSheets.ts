@@ -30,9 +30,9 @@ const SHEETS_CONFIG = {
   SHEET_ID: import.meta.env.VITE_GOOGLE_SHEETS_ID || '1UJ0jRXq_Bb_J-2x0zpLcoj79wvHQhFsjkebICxMEaQk',
   EQUIPMENT_RANGE: 'Equipment!A:E',
   CHECKOUTS_RANGE: 'Checkouts!A:M',
-  API_KEY: import.meta.env.VITE_GOOGLE_API_KEY || 'AIzaSyAkkk6PfDbcWNqOsreN1MEk2v8jbiTdnGM', // Replace with your actual API key from Google Cloud Console
-  // Add your Google Apps Script URL here after deployment
-  APPS_SCRIPT_URL: import.meta.env.VITE_APPS_SCRIPT_URL || 'YOUR_APPS_SCRIPT_URL_HERE',
+  API_KEY: import.meta.env.VITE_GOOGLE_API_KEY || 'AIzaSyAkkk6PfDbcWNqOsreN1MEk2v8jbiTdnGM',
+  // For production deployment, these values will come from GitHub Secrets
+  APPS_SCRIPT_URL: import.meta.env.VITE_APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwtBfLnOmtyBB14ZyeKSPzXmFRHl5QSlmbw1e4fcSvdXFYZmVndfGyOjFh3mOD2S6-cXw/exec',
 };
 
 class GoogleSheetsService {
