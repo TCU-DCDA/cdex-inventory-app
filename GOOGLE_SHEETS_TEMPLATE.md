@@ -54,13 +54,13 @@ ID	Name	Category	Serial Number	Available
 
 **Headers (Row 1):**
 ```
-ID	Student Name	Student ID	Student Email	Student Major	Faculty Sponsor	Checkout Date	Return Date	Equipment ID	Equipment Name	Serial Number	Returned	Comments
+ID	Student Name	Student ID	Student Email	Student Major	Faculty Sponsor	Staff Member	Checkout Date	Return Date	Equipment ID	Equipment Name	Serial Number	Returned	Comments
 ```
 
 **Sample Data (Rows 2+):**
 ```
-1	Sarah Johnson	SJ12345	sarah.johnson@tcu.edu	Film Production	Dr. Smith	2024-06-10	2024-06-17	2	Canon EOS R5	CR5002	FALSE	Needed for senior capstone project
-2	Mike Chen	MC67890	mike.chen@tcu.edu	Journalism	Prof. Johnson	2024-06-08	2024-06-15	6	Sony A7 III	SA7001	FALSE	Documentary filming project
+1	Sarah Johnson	SJ12345	sarah.johnson@tcu.edu	Film Production	Dr. Smith	Ashlee P	2024-06-10	2024-06-17	2	Canon EOS R5	CR5002	FALSE	Needed for senior capstone project
+2	Mike Chen	MC67890	mike.chen@tcu.edu	Journalism	Prof. Johnson	Hanna S	2024-06-08	2024-06-15	6	Sony A7 III	SA7001	FALSE	Documentary filming project
 ```
 
 ## Quick Setup Instructions
@@ -95,5 +95,6 @@ You can add data validation in Google Sheets to ensure data consistency:
 
 1. **Available column (Equipment sheet):** Dropdown with `TRUE, FALSE`
 2. **Returned column (Checkouts sheet):** Dropdown with `TRUE, FALSE`
-3. **Category column:** Dropdown with the six categories listed above
-4. **Equipment ID (Checkouts sheet):** Reference to Equipment sheet IDs
+3. **Staff Member column (Checkouts sheet):** Dropdown with `Ashlee P, Hanna S, Curt R, Jason P`
+4. **Category column:** Dropdown with the six categories listed above
+5. **Equipment ID (Checkouts sheet):** Reference to Equipment sheet IDs

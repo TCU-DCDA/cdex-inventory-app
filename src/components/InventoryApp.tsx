@@ -26,6 +26,7 @@ const InventoryApp = () => {
   const [studentMajor, setStudentMajor] = useState('');
   const [facultySponsor, setFacultySponsor] = useState('');
   const [selectedEquipment, setSelectedEquipment] = useState('');
+  const [staffMember, setStaffMember] = useState('');
   const [comments, setComments] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -71,7 +72,8 @@ const InventoryApp = () => {
                         isValidEmail(studentEmail) &&
                         studentMajor.trim() !== '' && 
                         facultySponsor.trim() !== '' && 
-                        selectedEquipment !== '';
+                        selectedEquipment !== '' &&
+                        staffMember !== '';
 
   // Form completion progress
   const completedFields = [
@@ -80,9 +82,10 @@ const InventoryApp = () => {
     studentEmail.trim() !== '' && isValidEmail(studentEmail),
     studentMajor.trim() !== '',
     facultySponsor.trim() !== '',
-    selectedEquipment !== ''
+    selectedEquipment !== '',
+    staffMember !== ''
   ].filter(Boolean).length;
-  const totalFields = 6;
+  const totalFields = 7;
   const completionPercentage = Math.round((completedFields / totalFields) * 100);
 
   const handleCheckout = async () => {
@@ -103,6 +106,7 @@ const InventoryApp = () => {
       studentEmail,
       studentMajor,
       facultySponsor,
+      staffMember,
       comments: comments.trim(),
       checkoutDate: new Date().toISOString().split('T')[0],
       returnDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
@@ -122,6 +126,7 @@ const InventoryApp = () => {
       setStudentMajor('');
       setFacultySponsor('');
       setSelectedEquipment('');
+      setStaffMember('');
       setComments('');
       
       alert('Equipment checked out successfully!');
@@ -480,6 +485,28 @@ const InventoryApp = () => {
                           }
                         </optgroup>
                       ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-base font-semibold text-gray-700 mb-3">
+                      Staff Member <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <select
+                      value={staffMember}
+                      onChange={(e) => setStaffMember(e.target.value)}
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        staffMember === '' 
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
+                      required
+                    >
+                      <option value="">Select staff member...</option>
+                      <option value="Ashlee P">Ashlee P</option>
+                      <option value="Hanna S">Hanna S</option>
+                      <option value="Curt R">Curt R</option>
+                      <option value="Jason P">Jason P</option>
                     </select>
                   </div>
 

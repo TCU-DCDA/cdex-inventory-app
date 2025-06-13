@@ -70,6 +70,7 @@ function addCheckout(sheet, checkout) {
       checkout.studentEmail,
       checkout.studentMajor,
       checkout.facultySponsor,
+      checkout.staffMember,
       checkout.checkoutDate,
       checkout.returnDate,
       checkout.equipmentId,

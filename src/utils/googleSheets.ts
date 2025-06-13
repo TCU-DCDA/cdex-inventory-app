@@ -15,6 +15,7 @@ export interface CheckoutRecord {
   studentEmail: string;
   studentMajor: string;
   facultySponsor: string;
+  staffMember: string;
   checkoutDate: string;
   returnDate: string;
   equipmentId: number;
@@ -29,7 +30,7 @@ const SHEETS_CONFIG = {
   // Replace with your actual Google Sheets ID
   SHEET_ID: import.meta.env.VITE_GOOGLE_SHEETS_ID || '1UJ0jRXq_Bb_J-2x0zpLcoj79wvHQhFsjkebICxMEaQk',
   EQUIPMENT_RANGE: 'Equipment!A:E',
-  CHECKOUTS_RANGE: 'Checkouts!A:M',
+  CHECKOUTS_RANGE: 'Checkouts!A:N',
   API_KEY: import.meta.env.VITE_GOOGLE_API_KEY || 'AIzaSyAkkk6PfDbcWNqOsreN1MEk2v8jbiTdnGM',
   // For production deployment, these values will come from GitHub Secrets
   APPS_SCRIPT_URL: import.meta.env.VITE_APPS_SCRIPT_URL || 'https://script.google.com/macros/s/AKfycbwtBfLnOmtyBB14ZyeKSPzXmFRHl5QSlmbw1e4fcSvdXFYZmVndfGyOjFh3mOD2S6-cXw/exec',
@@ -78,13 +79,14 @@ class GoogleSheetsService {
       studentEmail: row[3] || '',
       studentMajor: row[4] || '',
       facultySponsor: row[5] || '',
-      checkoutDate: row[6] || '',
-      returnDate: row[7] || '',
-      equipmentId: parseInt(row[8]) || 0,
-      equipmentName: row[9] || '',
-      serialNumber: row[10] || '',
-      returned: row[11] === 'TRUE' || row[11] === true || row[11] === 'Yes',
-      comments: row[12] || ''
+      staffMember: row[6] || '',
+      checkoutDate: row[7] || '',
+      returnDate: row[8] || '',
+      equipmentId: parseInt(row[9]) || 0,
+      equipmentName: row[10] || '',
+      serialNumber: row[11] || '',
+      returned: row[12] === 'TRUE' || row[12] === true || row[12] === 'Yes',
+      comments: row[13] || ''
     }));
   }
 
@@ -346,6 +348,7 @@ class GoogleSheetsService {
         studentEmail: 'sarah.johnson@tcu.edu',
         studentMajor: 'Film Production',
         facultySponsor: 'Dr. Smith',
+        staffMember: 'Ashlee P',
         checkoutDate: '2024-06-10',
         returnDate: '2024-06-17',
         equipmentId: 2,
@@ -361,6 +364,7 @@ class GoogleSheetsService {
         studentEmail: 'mike.chen@tcu.edu',
         studentMajor: 'Journalism',
         facultySponsor: 'Prof. Johnson',
+        staffMember: 'Hanna S',
         checkoutDate: '2024-06-08',
         returnDate: '2024-06-15',
         equipmentId: 6,
