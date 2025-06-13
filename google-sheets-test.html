@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheets API Test</title>
+</head>
+<body>
+    <h1>Google Sheets API Test</h1>
+    <button onclick="testAPI()">Test API Connection</button>
+    <div id="results"></div>
+
+    <script>
+        const SHEET_ID = '1UJ0jRXq_Bb_J-2x0zpLcoj79wvHQhFsjkebICxMEaQk';
+        const API_KEY = 'AIzaSyAkkk6PfDbcWNqOsreN1MEk2v8jbiTdnGM';
+        
+        async function testAPI() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<p>Testing...</p>';
+            
+            try {
+                // Test Equipment sheet
+                const equipmentUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Equipment!A:E?key=${API_KEY}`;
+                console.log('Testing URL:', equipmentUrl);
+                
+                const response = await fetch(equipmentUrl);
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Response data:', data);
+                
+                resultsDiv.innerHTML = `
+                    <h2>✅ Success!</h2>
+                    <p><strong>Status:</strong> ${response.status}</p>
+                    <p><strong>Rows found:</strong> ${data.values ? data.values.length : 0}</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } catch (error) {
+                console.error('Error:', error);
+                resultsDiv.innerHTML = `
+                    <h2>❌ Error</h2>
+                    <p>${error.message}</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

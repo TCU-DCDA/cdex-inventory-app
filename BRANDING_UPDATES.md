@@ -1,9 +1,18 @@
 # CDEx Inventory App - TCU Branding Updates
 
 ## Overview
-The inventory management application has been completely redesigned with professional TCU branding and enhanced user experience.
+The inventory management application has been completely redesigned with professional TCU branding, enhanced user experience, and Google Sheets integration for persistent data storage.
 
 ## Key Improvements
+
+### 📊 **Google Sheets Integration**
+- **Persistent Data Storage**: Equipment and checkout data stored in Google Sheets
+- **Real-time Sync**: Automatic data synchronization with Google Sheets API
+- **Offline Support**: Fallback to local data when offline or Sheets unavailable
+- **Easy Management**: TCU staff can manage inventory directly in Google Sheets
+- **Status Indicators**: Visual indicators showing connection status and data sync state
+- **Manual Refresh**: Refresh button to manually sync data from Google Sheets
+- **Optimistic Updates**: Changes appear immediately while syncing in background
 
 ### 🎨 **TCU Color Scheme**
 - **Primary Colors**: Official TCU purple (`#4d1979`) throughout the interface

@@ -1,79 +1,24 @@
 import { useState } from 'react';
-import { Search, User, BookOpen, Camera, Mic, Monitor, CheckCircle, XCircle } from 'lucide-react';
+import { Search, User, BookOpen, Camera, Mic, Monitor, CheckCircle, XCircle, RefreshCw, Wifi, WifiOff } from 'lucide-react';
+import { useGoogleSheets } from '../hooks/useGoogleSheets';
 
 const InventoryApp = () => {
-  console.log('InventoryApp component is rendering - Button fix applied', new Date().toISOString());
+  console.log('InventoryApp component is rendering - Google Sheets Integration', new Date().toISOString());
   
-  // Dummy equipment data
-  const [equipment, setEquipment] = useState([
-    // Video Cameras
-    { id: 1, name: 'Canon EOS R5', category: 'Video Camera - Professional', serialNumber: 'CR5001', available: true },
-    { id: 2, name: 'Canon EOS R5', category: 'Video Camera - Professional', serialNumber: 'CR5002', available: false },
-    { id: 3, name: 'Sony FX3', category: 'Video Camera - Professional', serialNumber: 'SF3001', available: true },
-    { id: 4, name: 'Canon EOS R6', category: 'Video Camera - Standard', serialNumber: 'CR6001', available: true },
-    { id: 5, name: 'Canon EOS R6', category: 'Video Camera - Standard', serialNumber: 'CR6002', available: true },
-    { id: 6, name: 'Sony A7 III', category: 'Video Camera - Standard', serialNumber: 'SA7001', available: false },
-    
-    // DSLR Cameras
-    { id: 7, name: 'Canon 5D Mark IV', category: 'DSLR Camera', serialNumber: '5D001', available: true },
-    { id: 8, name: 'Canon 5D Mark IV', category: 'DSLR Camera', serialNumber: '5D002', available: true },
-    { id: 9, name: 'Nikon D850', category: 'DSLR Camera', serialNumber: 'ND001', available: false },
-    
-    // Yeti Microphones
-    { id: 10, name: 'Blue Yeti', category: 'Yeti Microphone', serialNumber: 'BY001', available: true },
-    { id: 11, name: 'Blue Yeti', category: 'Yeti Microphone', serialNumber: 'BY002', available: true },
-    { id: 12, name: 'Blue Yeti', category: 'Yeti Microphone', serialNumber: 'BY003', available: false },
-    { id: 13, name: 'Blue Yeti', category: 'Yeti Microphone', serialNumber: 'BY004', available: true },
-    
-    // PC Laptops
-    { id: 14, name: 'Dell XPS 15', category: 'PC Laptop', serialNumber: 'DX001', available: true },
-    { id: 15, name: 'Dell XPS 15', category: 'PC Laptop', serialNumber: 'DX002', available: false },
-    { id: 16, name: 'HP Spectre x360', category: 'PC Laptop', serialNumber: 'HS001', available: true },
-    { id: 17, name: 'HP Spectre x360', category: 'PC Laptop', serialNumber: 'HS002', available: true },
-    { id: 18, name: 'Lenovo ThinkPad X1', category: 'PC Laptop', serialNumber: 'LT001', available: true },
-    
-    // Mac Laptops
-    ...Array.from({length: 15}, (_, i) => ({
-      id: 19 + i,
-      name: 'MacBook Pro 16"',
-      category: 'Mac Laptop',
-      serialNumber: `MBP${String(i + 1).padStart(3, '0')}`,
-      available: i % 4 !== 0
-    }))
-  ]);
+  // Google Sheets integration
+  const {
+    equipment,
+    checkouts,
+    isLoading,
+    error,
+    isOnline,
+    isConfigured,
+    addCheckout,
+    markAsReturned,
+    refreshData
+  } = useGoogleSheets();
 
-  // Dummy checkout data
-  const [checkouts, setCheckouts] = useState([
-    {
-      id: 1,
-      studentName: 'Sarah Johnson',
-      studentId: 'SJ12345',
-      studentEmail: 'sarah.johnson@tcu.edu',
-      studentMajor: 'Film Production',
-      facultySponsor: 'Dr. Smith',
-      checkoutDate: '2024-06-10',
-      returnDate: '2024-06-17',
-      equipmentId: 2,
-      equipmentName: 'Canon EOS R5',
-      serialNumber: 'CR5002',
-      returned: false
-    },
-    {
-      id: 2,
-      studentName: 'Mike Chen',
-      studentId: 'MC67890',
-      studentEmail: 'mike.chen@tcu.edu',
-      studentMajor: 'Journalism',
-      facultySponsor: 'Prof. Johnson',
-      checkoutDate: '2024-06-08',
-      returnDate: '2024-06-15',
-      equipmentId: 6,
-      equipmentName: 'Sony A7 III',
-      serialNumber: 'SA7001',
-      returned: false
-    }
-  ]);
-
+  // Form state
   const [activeTab, setActiveTab] = useState('checkout');
   const [studentName, setStudentName] = useState('');
   const [studentId, setStudentId] = useState('');
@@ -140,7 +85,7 @@ const InventoryApp = () => {
   const totalFields = 6;
   const completionPercentage = Math.round((completedFields / totalFields) * 100);
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     if (!isFormComplete) {
       alert('Please fill in all fields before completing checkout');
       return;
@@ -152,8 +97,7 @@ const InventoryApp = () => {
       return;
     }
 
-    const newCheckout = {
-      id: checkouts.length + 1,
+    const checkoutData = {
       studentName,
       studentId,
       studentEmail,
@@ -168,41 +112,37 @@ const InventoryApp = () => {
       returned: false
     };
 
-    setCheckouts([...checkouts, newCheckout]);
+    const success = await addCheckout(checkoutData);
     
-    setEquipment(equipment.map(item => 
-      item.id === parseInt(selectedEquipment) ? { ...item, available: false } : item
-    ));
-
-    setStudentName('');
-    setStudentId('');
-    setStudentEmail('');
-    setStudentMajor('');
-    setFacultySponsor('');
-    setSelectedEquipment('');
-    setComments('');
-    
-    alert('Equipment checked out successfully!');
+    if (success) {
+      // Reset form
+      setStudentName('');
+      setStudentId('');
+      setStudentEmail('');
+      setStudentMajor('');
+      setFacultySponsor('');
+      setSelectedEquipment('');
+      setComments('');
+      
+      alert('Equipment checked out successfully!');
+    } else {
+      alert('Failed to check out equipment. Please try again.');
+    }
   };
 
-  const handleCheckin = (checkoutId: number) => {
-    setCheckouts(checkouts.map(checkout => 
-      checkout.id === checkoutId ? { ...checkout, returned: true } : checkout
-    ));
+  const handleCheckin = async (checkoutId: number) => {
+    const success = await markAsReturned(checkoutId);
     
-    const checkout = checkouts.find(c => c.id === checkoutId);
-    if (checkout) {
-      setEquipment(equipment.map(item => 
-        item.id === checkout.equipmentId ? { ...item, available: true } : item
-      ));
+    if (success) {
+      alert('Equipment checked in successfully!');
+    } else {
+      alert('Failed to check in equipment. Please try again.');
     }
-    
-    alert('Equipment checked in successfully!');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-tcu-50 to-gray-100 py-8">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-tcu-50 to-gray-100 py-4 md:py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="bg-tcu-primary text-white relative overflow-hidden rounded-t-3xl shadow-xl mb-2">
           {/* Subtle geometric background */}
@@ -212,33 +152,33 @@ const InventoryApp = () => {
             <div className="absolute top-1/2 left-1/3 w-64 h-64 rounded-full bg-white transform -translate-x-32 -translate-y-32"></div>
           </div>
           
-          <div className="relative z-10 px-16 py-20">
-            <div className="flex items-center justify-between">
+          <div className="relative z-10 px-4 sm:px-8 md:px-12 lg:px-16 py-8 sm:py-12 md:py-16 lg:py-20">
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between space-y-8 lg:space-y-0">
               {/* Left side - Main branding */}
               <div className="flex-1">
-                <div className="mb-8">
-                  <h1 className="text-7xl font-black text-white leading-none tracking-tight mb-4">
+                <div className="mb-6 md:mb-8">
+                  <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white leading-none tracking-tight mb-3 md:mb-4">
                     CDEx
                   </h1>
-                  <div className="flex items-center space-x-4 mb-6">
-                    <div className="h-0.5 bg-white w-16"></div>
-                    <p className="text-xl font-light text-white/90 uppercase tracking-widest">
+                  <div className="flex items-center space-x-3 md:space-x-4 mb-4 md:mb-6">
+                    <div className="h-0.5 bg-white w-12 md:w-16"></div>
+                    <p className="text-sm sm:text-base md:text-lg lg:text-xl font-light text-white/90 uppercase tracking-widest">
                       Inventory Management
                     </p>
                   </div>
                 </div>
                 
-                <div className="space-y-2">
-                  <p className="text-white/80 text-base font-medium">
+                <div className="space-y-1 md:space-y-2">
+                  <p className="text-white/80 text-sm md:text-base font-medium">
                     Center for Digital Expression
                   </p>
-                  <p className="text-white/60 text-sm font-normal">
+                  <p className="text-white/60 text-xs md:text-sm font-normal">
                     Texas Christian University
                   </p>
                 </div>
               </div>
               
-              {/* Right side - Stats */}
+              {/* Right side - Stats - Desktop Only */}
               <div className="hidden xl:flex items-center space-x-8">
                 <div className="text-center group">
                   <div className="bg-white/10 backdrop-blur-sm rounded-2xl px-8 py-6 border border-white/20 group-hover:bg-white/15 transition-all duration-300">
@@ -256,15 +196,66 @@ const InventoryApp = () => {
               </div>
             </div>
             
+            {/* Status indicators */}
+            <div className="mt-6 md:mt-8 flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+              <div className="flex flex-wrap items-center gap-3 md:gap-4">
+                {/* Online status */}
+                <div className="flex items-center space-x-2">
+                  {isOnline ? (
+                    <Wifi className="w-4 h-4 text-green-400" />
+                  ) : (
+                    <WifiOff className="w-4 h-4 text-red-400" />
+                  )}
+                  <span className="text-white/70 text-xs md:text-sm">
+                    {isOnline ? 'Online' : 'Offline'}
+                  </span>
+                </div>
+                
+                {/* Google Sheets status */}
+                <div className="flex items-center space-x-2">
+                  <div className={`w-2 h-2 rounded-full ${isConfigured ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
+                  <span className="text-white/70 text-xs md:text-sm">
+                    {isConfigured ? 'Google Sheets Connected' : 'Local Storage Only'}
+                  </span>
+                </div>
+                
+                {/* Loading indicator */}
+                {isLoading && (
+                  <div className="flex items-center space-x-2">
+                    <div className="animate-spin w-4 h-4 border-2 border-white/30 border-t-white rounded-full"></div>
+                    <span className="text-white/70 text-xs md:text-sm">Loading...</span>
+                  </div>
+                )}
+                
+                {/* Error indicator */}
+                {error && (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-2 h-2 rounded-full bg-red-400"></div>
+                    <span className="text-white/70 text-xs md:text-sm truncate max-w-48">{error}</span>
+                  </div>
+                )}
+              </div>
+              
+              {/* Refresh button */}
+              <button
+                onClick={refreshData}
+                disabled={isLoading}
+                className="flex items-center justify-center space-x-2 px-3 md:px-4 py-2 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              >
+                <RefreshCw className={`w-4 h-4 text-white ${isLoading ? 'animate-spin' : ''}`} />
+                <span className="text-white/90 text-xs md:text-sm font-medium">Refresh</span>
+              </button>
+            </div>
+            
             {/* Mobile stats */}
-            <div className="xl:hidden mt-12 flex justify-center space-x-6">
+            <div className="xl:hidden mt-8 md:mt-12 flex justify-center space-x-6">
               <div className="text-center">
-                <div className="text-3xl font-black text-white">{availableEquipment.length}</div>
+                <div className="text-2xl md:text-3xl font-black text-white">{availableEquipment.length}</div>
                 <div className="text-white/70 text-xs uppercase tracking-wider">Available</div>
               </div>
               <div className="w-px bg-white/30 mx-4"></div>
               <div className="text-center">
-                <div className="text-3xl font-black text-white">{activeCheckouts.length}</div>
+                <div className="text-2xl md:text-3xl font-black text-white">{activeCheckouts.length}</div>
                 <div className="text-white/70 text-xs uppercase tracking-wider">Checked Out</div>
               </div>
             </div>
@@ -272,62 +263,62 @@ const InventoryApp = () => {
         </div>
 
         {/* Tab Navigation */}
-        <div className="bg-white border-b border-tcu-200 px-12 py-2 shadow-sm">
-          <div className="flex space-x-4">
+        <div className="bg-white border-b border-tcu-200 px-4 sm:px-8 md:px-12 py-2 shadow-sm">
+          <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-4 overflow-x-auto">
             <button
               onClick={() => setActiveTab('checkout')}
-              className={`px-8 py-4 font-semibold border-b-3 transition-all duration-200 ${
+              className={`px-4 sm:px-6 md:px-8 py-3 md:py-4 font-semibold border-b-3 transition-all duration-200 rounded-t-lg sm:rounded-none whitespace-nowrap ${
                 activeTab === 'checkout' 
                   ? 'text-tcu-700 border-tcu-700 bg-tcu-50' 
                   : 'text-gray-600 border-transparent hover:text-tcu-600 hover:bg-tcu-50/50'
               }`}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-center sm:justify-start space-x-2">
                 <BookOpen className="w-4 h-4" />
-                <span>Check Out Equipment</span>
+                <span className="text-sm md:text-base">Check Out Equipment</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('checkin')}
-              className={`px-8 py-4 font-semibold border-b-3 transition-all duration-200 ${
+              className={`px-4 sm:px-6 md:px-8 py-3 md:py-4 font-semibold border-b-3 transition-all duration-200 rounded-t-lg sm:rounded-none whitespace-nowrap ${
                 activeTab === 'checkin' 
                   ? 'text-tcu-700 border-tcu-700 bg-tcu-50' 
                   : 'text-gray-600 border-transparent hover:text-tcu-600 hover:bg-tcu-50/50'
               }`}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-center sm:justify-start space-x-2">
                 <CheckCircle className="w-4 h-4" />
-                <span>Check In Equipment</span>
+                <span className="text-sm md:text-base">Check In Equipment</span>
               </div>
             </button>
             <button
               onClick={() => setActiveTab('inventory')}
-              className={`px-8 py-4 font-semibold border-b-3 transition-all duration-200 ${
+              className={`px-4 sm:px-6 md:px-8 py-3 md:py-4 font-semibold border-b-3 transition-all duration-200 rounded-t-lg sm:rounded-none whitespace-nowrap ${
                 activeTab === 'inventory' 
                   ? 'text-tcu-700 border-tcu-700 bg-tcu-50' 
                   : 'text-gray-600 border-transparent hover:text-tcu-600 hover:bg-tcu-50/50'
               }`}
             >
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center justify-center sm:justify-start space-x-2">
                 <Monitor className="w-4 h-4" />
-                <span>View Inventory</span>
+                <span className="text-sm md:text-base">View Inventory</span>
               </div>
             </button>
           </div>
         </div>
 
         {/* Content Area */}
-        <div className="bg-white p-12 rounded-b-2xl shadow-lg border border-tcu-100">
+        <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-12 rounded-b-2xl shadow-lg border border-tcu-100">
           {/* Checkout Tab */}
           {activeTab === 'checkout' && (
-            <div className="grid lg:grid-cols-2 gap-16">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
               {/* Checkout Form */}
-              <div className="space-y-8 mx-8">
-                <div className="flex items-center space-x-4 mb-8">
-                  <div className="bg-tcu-100 p-3 rounded-xl">
-                    <BookOpen className="w-7 h-7 text-tcu-700" />
+              <div className="space-y-6 md:space-y-8 mx-0 lg:mx-8">
+                <div className="flex items-center space-x-3 md:space-x-4 mb-6 md:mb-8">
+                  <div className="bg-tcu-100 p-2 md:p-3 rounded-xl">
+                    <BookOpen className="w-5 md:w-7 h-5 md:h-7 text-tcu-700" />
                   </div>
-                  <h2 className="text-3xl font-bold text-gray-900">
+                  <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-gray-900">
                     Equipment Checkout
                   </h2>
                 </div>
