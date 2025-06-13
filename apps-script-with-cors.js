@@ -106,8 +106,8 @@ function markReturned(sheet, checkoutId) {
     
     for (let i = 1; i < checkoutData.length; i++) {
       if (checkoutData[i][0] === checkoutId) {
-        checkoutSheet.getRange(i + 1, 12).setValue(true); // Column L (Returned)
-        equipmentId = checkoutData[i][8]; // Column I (Equipment ID)
+        checkoutSheet.getRange(i + 1, 13).setValue(true); // Column M (Returned)
+        equipmentId = checkoutData[i][9]; // Column J (Equipment ID)
         break;
       }
     }

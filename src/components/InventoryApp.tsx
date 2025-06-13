@@ -671,6 +671,10 @@ const InventoryApp = () => {
                               <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Sponsor:</span> 
                               <span className="text-gray-700">{checkout.facultySponsor}</span>
                             </p>
+                            <p className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Staff:</span> 
+                              <span className="text-gray-700">{(checkout as any).staffMember}</span>
+                            </p>
                           </div>
                           <div className="space-y-3">
                             <p className="flex flex-col sm:flex-row sm:items-center">
