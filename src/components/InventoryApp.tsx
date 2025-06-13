@@ -48,6 +48,7 @@ const InventoryApp = () => {
       id: 1,
       studentName: 'Sarah Johnson',
       studentId: 'SJ12345',
+      studentEmail: 'sarah.johnson@tcu.edu',
       studentMajor: 'Film Production',
       facultySponsor: 'Dr. Smith',
       checkoutDate: '2024-06-10',
@@ -61,6 +62,7 @@ const InventoryApp = () => {
       id: 2,
       studentName: 'Mike Chen',
       studentId: 'MC67890',
+      studentEmail: 'mike.chen@tcu.edu',
       studentMajor: 'Journalism',
       facultySponsor: 'Prof. Johnson',
       checkoutDate: '2024-06-08',
@@ -75,9 +77,11 @@ const InventoryApp = () => {
   const [activeTab, setActiveTab] = useState('checkout');
   const [studentName, setStudentName] = useState('');
   const [studentId, setStudentId] = useState('');
+  const [studentEmail, setStudentEmail] = useState('');
   const [studentMajor, setStudentMajor] = useState('');
   const [facultySponsor, setFacultySponsor] = useState('');
   const [selectedEquipment, setSelectedEquipment] = useState('');
+  const [comments, setComments] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
   const categories = ['Video Camera - Professional', 'Video Camera - Standard', 'DSLR Camera', 'Yeti Microphone', 'PC Laptop', 'Mac Laptop'];
@@ -103,13 +107,23 @@ const InventoryApp = () => {
   const activeCheckouts = checkouts.filter(checkout => !checkout.returned);
   const filteredCheckouts = activeCheckouts.filter(checkout =>
     checkout.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    checkout.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    ((checkout as any).studentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     checkout.equipmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     checkout.serialNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Email validation helper
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
   // Form validation
   const isFormComplete = studentName.trim() !== '' && 
                         studentId.trim() !== '' && 
+                        studentEmail.trim() !== '' &&
+                        isValidEmail(studentEmail) &&
                         studentMajor.trim() !== '' && 
                         facultySponsor.trim() !== '' && 
                         selectedEquipment !== '';
@@ -118,11 +132,12 @@ const InventoryApp = () => {
   const completedFields = [
     studentName.trim() !== '',
     studentId.trim() !== '',
+    studentEmail.trim() !== '' && isValidEmail(studentEmail),
     studentMajor.trim() !== '',
     facultySponsor.trim() !== '',
     selectedEquipment !== ''
   ].filter(Boolean).length;
-  const totalFields = 5;
+  const totalFields = 6;
   const completionPercentage = Math.round((completedFields / totalFields) * 100);
 
   const handleCheckout = () => {
@@ -141,8 +156,10 @@ const InventoryApp = () => {
       id: checkouts.length + 1,
       studentName,
       studentId,
+      studentEmail,
       studentMajor,
       facultySponsor,
+      comments: comments.trim(),
       checkoutDate: new Date().toISOString().split('T')[0],
       returnDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       equipmentId: equipmentItem.id,
@@ -159,9 +176,11 @@ const InventoryApp = () => {
 
     setStudentName('');
     setStudentId('');
+    setStudentEmail('');
     setStudentMajor('');
     setFacultySponsor('');
     setSelectedEquipment('');
+    setComments('');
     
     alert('Equipment checked out successfully!');
   };
@@ -387,6 +406,28 @@ const InventoryApp = () => {
 
                   <div>
                     <label className="block text-base font-semibold text-gray-700 mb-3 flex items-center">
+                      <span className="mr-3">📧</span>
+                      Student Email <span className="text-red-500 ml-1">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      value={studentEmail}
+                      onChange={(e) => setStudentEmail(e.target.value)}
+                      className={`w-full px-5 py-4 rounded-xl focus:outline-none focus:ring-3 transition-colors text-base ${
+                        studentEmail.trim() === '' || !isValidEmail(studentEmail)
+                          ? 'border-2 border-red-300 focus:ring-red-200 focus:border-red-500 bg-red-50' 
+                          : 'border border-green-300 focus:ring-green-200 focus:border-green-500 bg-green-50'
+                      }`}
+                      placeholder="Enter your @tcu.edu email"
+                      required
+                    />
+                    {studentEmail.trim() !== '' && !isValidEmail(studentEmail) && (
+                      <p className="text-red-600 text-sm mt-2">⚠️ Please enter a valid email address</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block text-base font-semibold text-gray-700 mb-3 flex items-center">
                       <BookOpen className="w-5 h-5 mr-3 text-tcu-600" />
                       Student Major <span className="text-red-500 ml-1">*</span>
                     </label>
@@ -450,6 +491,19 @@ const InventoryApp = () => {
                         </optgroup>
                       ))}
                     </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-base font-semibold text-gray-700 mb-3">
+                      Comments <span className="text-gray-500 text-sm font-normal">(Optional)</span>
+                    </label>
+                    <textarea
+                      value={comments}
+                      onChange={(e) => setComments(e.target.value)}
+                      className="w-full px-5 py-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-3 focus:ring-tcu-primary focus:border-tcu-primary transition-colors text-base resize-none"
+                      placeholder="Any additional notes or special requirements for this equipment checkout..."
+                      rows={3}
+                    />
                   </div>
 
                   <div className="pt-4">
@@ -587,6 +641,10 @@ const InventoryApp = () => {
                                 <span className="text-gray-700">{checkout.studentId}</span>
                               </p>
                               <p className="flex items-center">
+                                <span className="font-semibold text-tcu-700 w-28">Email:</span> 
+                                <span className="text-gray-700">{checkout.studentEmail}</span>
+                              </p>
+                              <p className="flex items-center">
                                 <span className="font-semibold text-tcu-700 w-28">Major:</span> 
                                 <span className="text-gray-700">{checkout.studentMajor}</span>
                               </p>
@@ -610,6 +668,12 @@ const InventoryApp = () => {
                               </p>
                             </div>
                           </div>
+                          {(checkout as any).comments && (checkout as any).comments.trim() !== '' && (
+                            <div className="mt-6 p-4 bg-tcu-50 rounded-lg border border-tcu-200">
+                              <h4 className="font-semibold text-tcu-700 mb-2">Comments:</h4>
+                              <p className="text-gray-700 text-sm leading-relaxed">{(checkout as any).comments}</p>
+                            </div>
+                          )}
                         </div>
                         <button
                           onClick={() => handleCheckin(checkout.id)}
