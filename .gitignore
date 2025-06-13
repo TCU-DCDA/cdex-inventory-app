@@ -23,5 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-
+# Environment files (keep .env.production for GitHub Pages)
 .env
+.env.local
+.env.development
