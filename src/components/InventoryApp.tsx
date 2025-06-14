@@ -18,6 +18,26 @@ const InventoryApp = () => {
     refreshData
   } = useGoogleSheets();
 
+  // Debug logging
+  console.log('🔍 Debug Info:', {
+    equipmentCount: equipment.length,
+    availableEquipment: equipment.filter(item => item.available).length,
+    checkoutsCount: checkouts.length,
+    activeCheckouts: checkouts.filter(c => !c.returned).length,
+    isOnline,
+    isConfigured,
+    isLoading,
+    error
+  });
+
+  // Sample equipment for debugging
+  const sampleEquipment = equipment.slice(0, 3);
+  console.log('📋 Sample Equipment:', sampleEquipment);
+  
+  // Sample checkouts for debugging
+  const sampleCheckouts = checkouts.slice(0, 2);
+  console.log('📋 Sample Checkouts:', sampleCheckouts);
+
   // Form state
   const [activeTab, setActiveTab] = useState('checkout');
   const [studentName, setStudentName] = useState('');
@@ -54,7 +74,7 @@ const InventoryApp = () => {
   const filteredCheckouts = activeCheckouts.filter(checkout =>
     checkout.studentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     checkout.studentId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    ((checkout as any).studentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+    (checkout.studentEmail || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
     checkout.equipmentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
     checkout.serialNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -89,13 +109,38 @@ const InventoryApp = () => {
   const completionPercentage = Math.round((completedFields / totalFields) * 100);
 
   const handleCheckout = async () => {
+    console.log('🔄 Checkout attempt started');
+    console.log('📝 Form state:', {
+      studentName: studentName.trim(),
+      studentId: studentId.trim(),
+      studentEmail: studentEmail.trim(),
+      studentMajor: studentMajor.trim(),
+      facultySponsor: facultySponsor.trim(),
+      selectedEquipment,
+      staffMember,
+      isFormComplete
+    });
+
     if (!isFormComplete) {
+      console.warn('❌ Form incomplete');
       alert('Please fill in all fields before completing checkout');
       return;
     }
 
     const equipmentItem = equipment.find(item => item.id === parseInt(selectedEquipment));
+    console.log('🔍 Selected equipment:', {
+      selectedEquipmentId: selectedEquipment,
+      parsedId: parseInt(selectedEquipment),
+      foundItem: equipmentItem,
+      available: equipmentItem?.available
+    });
+
     if (!equipmentItem || !equipmentItem.available) {
+      console.error('❌ Equipment not available:', {
+        equipmentItem,
+        available: equipmentItem?.available,
+        allEquipment: equipment.map(e => ({ id: e.id, name: e.name, available: e.available }))
+      });
       alert('Selected equipment is not available');
       return;
     }
@@ -136,9 +181,25 @@ const InventoryApp = () => {
   };
 
   const handleCheckin = async (checkoutId: number) => {
+    console.log('🔄 Check-in attempt started for checkout ID:', checkoutId);
+    
+    const checkout = checkouts.find(c => c.id === checkoutId);
+    console.log('📝 Checkout being returned:', checkout);
+    
+    const equipmentBeforeReturn = equipment.find(e => e.id === checkout?.equipmentId);
+    console.log('📦 Equipment before return:', equipmentBeforeReturn);
+    
     const success = await markAsReturned(checkoutId);
     
+    console.log('✅ Return result:', success);
+    
     if (success) {
+      // Check equipment state after return
+      setTimeout(() => {
+        const equipmentAfterReturn = equipment.find(e => e.id === checkout?.equipmentId);
+        console.log('📦 Equipment after return:', equipmentAfterReturn);
+      }, 100);
+      
       alert('Equipment checked in successfully!');
     } else {
       alert('Failed to check in equipment. Please try again.');
@@ -256,10 +317,25 @@ const InventoryApp = () => {
                 <button
                   onClick={refreshData}
                   disabled={isLoading}
-                  className="flex items-center justify-center space-x-2 px-3 py-1.5 bg-white/10 backdrop-blur-sm rounded-lg border border-white/20 hover:bg-white/15 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center px-3 py-1 text-sm bg-tcu-100 text-tcu-700 rounded-lg hover:bg-tcu-200 transition-colors disabled:opacity-50"
                 >
-                  <RefreshCw className={`w-4 h-4 text-white ${isLoading ? 'animate-spin' : ''}`} />
+                  <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
                   <span className="text-white/90 text-xs font-medium">Refresh</span>
+                </button>
+                
+                {/* Debug Test Button */}
+                <button
+                  onClick={() => {
+                    console.log('🧪 Debug Test - Current State:');
+                    console.log('Equipment:', equipment);
+                    console.log('Available Equipment:', availableEquipment);
+                    console.log('Checkouts:', checkouts);
+                    console.log('Active Checkouts:', activeCheckouts);
+                    console.log('Staff Member State:', staffMember);
+                  }}
+                  className="flex items-center px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors"
+                >
+                  🧪 Debug
                 </button>
               </div>
             </div>
@@ -473,18 +549,26 @@ const InventoryApp = () => {
                       required
                     >
                       <option value="">Choose equipment...</option>
-                      {categories.map(category => (
-                        <optgroup key={category} label={category}>
-                          {availableEquipment
-                            .filter(item => item.category === category)
-                            .map(item => (
+                      {categories.map(category => {
+                        const categoryAvailable = availableEquipment.filter(item => item.category === category);
+                        const categoryTotal = equipment.filter(item => item.category === category);
+                        
+                        return (
+                          <optgroup key={category} label={`${category} (${categoryAvailable.length}/${categoryTotal.length} available)`}>
+                            {categoryAvailable.map(item => (
                               <option key={item.id} value={item.id}>
-                                {item.name} - {item.serialNumber}
+                                ✅ {item.name} - {item.serialNumber}
                               </option>
-                            ))
-                          }
-                        </optgroup>
-                      ))}
+                            ))}
+                            {/* Show unavailable items for debugging */}
+                            {categoryTotal.filter(item => !item.available).map(item => (
+                              <option key={`unavailable-${item.id}`} value="" disabled style={{color: '#999'}}>
+                                ❌ {item.name} - {item.serialNumber} (Checked Out)
+                              </option>
+                            ))}
+                          </optgroup>
+                        );
+                      })}
                     </select>
                   </div>
 
@@ -673,7 +757,7 @@ const InventoryApp = () => {
                             </p>
                             <p className="flex flex-col sm:flex-row sm:items-center">
                               <span className="font-semibold text-tcu-700 sm:w-28 mb-1 sm:mb-0">Staff:</span> 
-                              <span className="text-gray-700">{(checkout as any).staffMember}</span>
+                              <span className="text-gray-700">{checkout.staffMember}</span>
                             </p>
                           </div>
                           <div className="space-y-3">
@@ -693,10 +777,10 @@ const InventoryApp = () => {
                         </div>
                         
                         {/* Comments section */}
-                        {(checkout as any).comments && (checkout as any).comments.trim() !== '' && (
+                        {checkout.comments && checkout.comments.trim() !== '' && (
                           <div className="p-4 bg-tcu-50 rounded-lg border border-tcu-200">
                             <h4 className="font-semibold text-tcu-700 mb-2">Comments:</h4>
-                            <p className="text-gray-700 text-sm leading-relaxed">{(checkout as any).comments}</p>
+                            <p className="text-gray-700 text-sm leading-relaxed">{checkout.comments}</p>
                           </div>
                         )}
                         
@@ -779,6 +863,71 @@ const InventoryApp = () => {
               })}
             </div>
           )}
+
+          {/* Status and Debug Panel */}
+          <div className="bg-white/90 backdrop-blur-sm border border-tcu-200/50 rounded-xl p-4 mb-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-tcu-800 flex items-center">
+                {isOnline ? (
+                  <><Wifi className="w-4 h-4 mr-2 text-green-600" /> Online</>
+                ) : (
+                  <><WifiOff className="w-4 h-4 mr-2 text-red-600" /> Offline</>
+                )}
+              </h3>
+              <button
+                onClick={refreshData}
+                disabled={isLoading}
+                className="flex items-center px-3 py-1 text-sm bg-tcu-100 text-tcu-700 rounded-lg hover:bg-tcu-200 transition-colors disabled:opacity-50"
+              >
+                <RefreshCw className={`w-4 h-4 mr-1 ${isLoading ? 'animate-spin' : ''}`} />
+                Refresh
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-4 text-sm">
+              <div>
+                <span className="text-gray-600">Equipment:</span>
+                <span className="ml-2 font-medium">{equipment.length} total</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Available:</span>
+                <span className="ml-2 font-medium text-green-600">{availableEquipment.length} items</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Checkouts:</span>
+                <span className="ml-2 font-medium">{checkouts.length} total</span>
+              </div>
+              <div>
+                <span className="text-gray-600">Active:</span>
+                <span className="ml-2 font-medium text-orange-600">{activeCheckouts.length} out</span>
+              </div>
+            </div>                {!isConfigured && (
+                  <div className="mt-3 p-2 bg-yellow-50 border border-yellow-200 rounded text-yellow-700 text-sm">
+                    ⚠️ Using fallback data - Google Sheets not configured
+                  </div>
+                )}
+                {error && (
+                  <div className="mt-3 p-2 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
+                    ❌ Google Sheets Error: {error}
+                  </div>
+                )}
+                <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded">
+                  <h4 className="font-semibold text-blue-800 mb-2">📊 Integration Status:</h4>
+                  <div className="text-sm text-blue-700 space-y-1">
+                    <div>🔑 API Key: {import.meta.env.VITE_GOOGLE_API_KEY?.substring(0, 15) || 'Not Set'}...</div>
+                    <div>📄 Sheet ID: {import.meta.env.VITE_GOOGLE_SHEETS_ID?.substring(0, 15) || 'Not Set'}...</div>
+                    <div>🔗 Apps Script: {import.meta.env.VITE_APPS_SCRIPT_URL ? 'Set' : 'Not Set'}</div>
+                    <div>⚡ Status: {isConfigured ? '✅ Configured' : '❌ Using Demo Data'}</div>
+                    {!isConfigured && (
+                      <div className="mt-2 p-2 bg-yellow-100 rounded text-yellow-800 text-xs">
+                        💡 <strong>To connect to real Google Sheets:</strong><br/>
+                        1. Create your own Google Sheet<br/>
+                        2. Set up Google Apps Script<br/>
+                        3. Update .env file with real credentials
+                      </div>
+                    )}
+                  </div>
+                </div>
+          </div>
         </div>
       </div>
     </div>

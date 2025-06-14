@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Google Sheets Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test { margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Google Sheets Integration Test</h1>
+    
+    <div id="config-info" class="test info">
+        <h3>📋 Current Configuration:</h3>
+        <div id="config-details"></div>
+    </div>
+    
+    <button onclick="testConnection()">🔍 Test Google Sheets Connection</button>
+    <button onclick="testAppsScript()">🚀 Test Apps Script Connection</button>
+    
+    <div id="results"></div>
+
+    <script>
+        // Read environment variables (these would come from .env in the real app)
+        const config = {
+            sheetId: 'YOUR_SHEET_ID_HERE', // Replace with actual
+            apiKey: 'YOUR_API_KEY_HERE',   // Replace with actual
+            appsScriptUrl: 'YOUR_APPS_SCRIPT_URL_HERE' // Replace with actual
+        };
+
+        // Display current config
+        document.getElementById('config-details').innerHTML = `
+            <strong>Sheet ID:</strong> ${config.sheetId}<br>
+            <strong>API Key:</strong> ${config.apiKey.substring(0, 10)}...<br>
+            <strong>Apps Script URL:</strong> ${config.appsScriptUrl ? 'Set' : 'Not Set'}
+        `;
+
+        async function testConnection() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '<div class="test info">🔄 Testing Google Sheets API connection...</div>';
+
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${config.sheetId}/values/Equipment!A:E?key=${config.apiKey}`;
+                const response = await fetch(url);
+                const data = await response.json();
+
+                if (response.ok) {
+                    resultsDiv.innerHTML += `<div class="test success">✅ Google Sheets API connection successful!<br>Found ${data.values?.length || 0} rows of equipment data.</div>`;
+                } else {
+                    resultsDiv.innerHTML += `<div class="test error">❌ Google Sheets API failed: ${data.error?.message || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test error">❌ Connection failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testAppsScript() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML += '<div class="test info">🔄 Testing Apps Script connection...</div>';
+
+            try {
+                const response = await fetch(`${config.appsScriptUrl}?action=test`);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    resultsDiv.innerHTML += `<div class="test success">✅ Apps Script connection successful!</div>`;
+                } else {
+                    resultsDiv.innerHTML += `<div class="test error">❌ Apps Script failed: ${data.error || 'Unknown error'}</div>`;
+                }
+            } catch (error) {
+                resultsDiv.innerHTML += `<div class="test error">❌ Apps Script connection failed: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
